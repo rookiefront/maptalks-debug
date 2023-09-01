@@ -1,0 +1,7 @@
+@forward 'element-plus/theme-chalk/src/mixins/config.scss' with (
+   $namespace: 'map-debug'
+);
+
+//@forward 'element-plus/theme-chalk/src/common/var.scss' with ( $colors: ( 'primary': ( 'base': #b01f24, ), ));
+
+@import "element-plus/theme-chalk/src/index.scss";

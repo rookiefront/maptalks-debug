@@ -1,6 +1,18 @@
 <script setup lang="ts">
-import {computed, nextTick, onMounted, onUnmounted, ref, watch} from "vue";
+import {computed, nextTick, onMounted, onUnmounted, reactive, ref, watch} from "vue";
 import { Layer, type Map } from "maptalks";
+import {
+  ElRadio,
+  ElRadioGroup,
+  ElButton,
+  ElConfigProvider,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElInputNumber,
+  ElCollapse,
+  ElCollapseItem,
+} from "element-plus";
 
 
 interface Props {
@@ -23,6 +35,9 @@ const diff = {
 const drag = ref(false)
 const mapOk = ref(false)
 const refWrap = ref()
+const mvvmData = reactive({
+  openLayerId: '',
+})
 let rootNode:any
 function setMap(m: Map) {
   setTimeout(() => {
@@ -127,32 +142,39 @@ export default {
         </div>
         <div style="flex: 1;position:relative;background: white;">
           <div style="position:absolute;top: 0;bottom:0;left: 0;right: 0; overflow: auto">
-            <div v-for="(l,index) in layers" >
-              <el-form label-width="60px">
-                <el-form-item label="ID">
-                  <el-input v-model="l.id" disabled></el-input>
-                </el-form-item>
-                <el-form-item label="层级">
-                  <el-input v-model="l.zIndex"></el-input>
-                </el-form-item>
+            <el-collapse v-model="mvvmData.openLayerId">
+              <el-collapse-item :name="l.id"  v-for="(l,index) in layers" >
+                <template #title>
+                  {{l.id}}
+                </template>
+                <div>
+                  <el-form label-width="60px">
+                    <el-form-item label="ID">
+                      <el-input v-model="l.id" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="层级">
+                      <el-input-number v-model="l.zIndex" controls-position="right" @change="(value) => l.originLayer.setZIndex(value)"></el-input-number>
+                    </el-form-item>
 
-                <el-form-item label="可见">
-                  <div style="display: flex;">
-                    <el-radio-group v-model="l.visible" @change="val => val ? l.originLayer.show() : l.originLayer.hide() " style="margin-right: 35px">
-                      <el-radio :label="true"> 是 </el-radio>
-                      <el-radio :label="false"> 否 </el-radio>
-                    </el-radio-group>
-                    <el-button @click="() => {
+                    <el-form-item label="可见">
+                      <div style="display: flex;">
+                        <el-radio-group v-model="l.visible" @change="val => val ? l.originLayer.show() : l.originLayer.hide() " style="margin-right: 35px">
+                          <el-radio :label="true"> 是 </el-radio>
+                          <el-radio :label="false"> 否 </el-radio>
+                        </el-radio-group>
+                        <el-button @click="() => {
                       const value =  l.originLayer.isVisible()
                       l.visible = !value
                       l.visible ? l.originLayer.show() : l.originLayer.hide()
                     }">
-                      切换
-                    </el-button>
-                  </div>
-                </el-form-item>
-              </el-form>
-            </div>
+                          切换
+                        </el-button>
+                      </div>
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
           </div>
         </div>
 

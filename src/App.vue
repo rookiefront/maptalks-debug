@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as maptalks from 'maptalks'
-import {h, onMounted, ref, render, VNode} from "vue";
+import {h, onMounted, ref, render} from "vue";
 const refMap = ref()
 import DebugMap from './components/DebugMap/index.vue'
 
@@ -16,7 +16,6 @@ onMounted(() => {
   });
   let htmlDivElement = document.createElement('div');
   let vNode = h(DebugMap,);
-  // console.log(vNode)
   render(vNode, htmlDivElement)
   const setMap = vNode.component?.exposed?.setMap
   if (setMap) {
@@ -31,13 +30,6 @@ onMounted(() => {
 </template>
 
 <style  lang="scss">
-@forward 'element-plus/theme-chalk/src/mixins/config.scss' with (
-   $namespace: 'map-debug'
-);
-
-//@forward 'element-plus/theme-chalk/src/common/var.scss' with ( $colors: ( 'primary': ( 'base': #b01f24, ), ));
-
-@import "element-plus/theme-chalk/src/index.scss";
   .map{
     position: absolute;
     top: 0;

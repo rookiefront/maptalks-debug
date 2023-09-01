@@ -1,5 +1,8 @@
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
+import './assets/element/index.scss'
 import App from './App.vue'
 
-createApp(App).use(ElementPlus).mount('#app')
+const app = createApp(App)
+app.use(ElementPlus)
+app.mount('#app')
