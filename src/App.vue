@@ -4,6 +4,7 @@ import {h, onMounted, ref, render} from "vue";
 const refMap = ref()
 import DebugMap from './components/DebugMap/index.vue'
 
+
 onMounted(() => {
   var map = new maptalks.Map(refMap.value, {
     center: [-0.113049,51.498568],
