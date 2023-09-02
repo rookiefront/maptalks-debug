@@ -1,5 +1,5 @@
 {
-  "name": "maptalks-debug-ui",
+  "name": "maptalks-debug",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,6 +9,9 @@
     "preview": "vite preview",
     "ii": "pnpm install --registry=https://registry.npm.taobao.org"
   },
+  "files": [
+    "dist/"
+  ],
   "dependencies": {
     "element-plus": "2.3.12",
     "maptalks": "1.0.0-rc.25",

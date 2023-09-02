@@ -22,13 +22,13 @@ export default defineConfig({
       ],
       output: {
         entryFileNames: (chunkInfo) => {
-          return 'MapDebug.js'
+          return 'maptalksDebug.js'
         },
 
         inlineDynamicImports: true,
         format: 'iife',
-        name: 'debugMap',
-        sourcemap: true,
+        name: 'maptalksDebug',
+        // sourcemap: true,
         globals: {
 
         }
