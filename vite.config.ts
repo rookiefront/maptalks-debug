@@ -1,4 +1,5 @@
-import { defineConfig } from 'vite'
+import {defineConfig} from 'vite'
+// @ts-ignore
 import vue from '@vitejs/plugin-vue'
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,11 +10,29 @@ export default defineConfig({
     host: '127.0.0.1',
     port: 9008
   },
-  // css: {
-  //   preprocessorOptions: {
-  //     scss: {
-  //       additionalData: `@use "~/styles/element/index.scss" as *;`,
-  //     },
-  //   },
-  // },
+  build: {
+    cssTarget: ['chrome86'],
+    target: ['es2015'],
+
+    rollupOptions: {
+      input: '/src/build.ts',
+      preserveEntrySignatures: 'allow-extension',
+      external: [
+        'maptalks'
+      ],
+      output: {
+        entryFileNames: (chunkInfo) => {
+          return 'MapDebug.js'
+        },
+
+        inlineDynamicImports: true,
+        format: 'iife',
+        name: 'debugMap',
+        sourcemap: true,
+        globals: {
+
+        }
+      }
+    }
+  }
 })
