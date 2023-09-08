@@ -1,9 +1,9 @@
 import {createApp, createVNode, h, render} from 'vue'
 import './assets/element/index.scss'
+import './assets/iconfont/iconfont.js'
 import App from './build.vue'
 import * as maptalks from 'maptalks'
 import DebugMap from "./components/DebugMap/index.vue";
-
 
 const app = createApp(App)
 let htmlDivElement = document.createElement('div');

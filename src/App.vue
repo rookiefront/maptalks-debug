@@ -3,6 +3,7 @@ import * as maptalks from 'maptalks'
 import {h, onMounted, ref, render} from "vue";
 const refMap = ref()
 import DebugMap from './components/DebugMap/index.vue'
+import './assets/iconfont/iconfont.js'
 
 
 onMounted(() => {
@@ -22,6 +23,9 @@ onMounted(() => {
   if (setMap) {
     setMap(map)
   }
+  new maptalks.VectorLayer('rect-layer-2', [new maptalks.Rectangle(map.getCenter(),800,800)]).addTo(map)
+
+  new maptalks.VectorLayer('rect-layer', [new maptalks.Rectangle(map.getCenter(),500,500)]).addTo(map)
 
 })
 </script>
