@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {nextTick, onMounted, onUnmounted, reactive, ref, watch} from "vue";
-import {type Map} from "maptalks";
+import {Layer, type Map, VectorLayer} from "maptalks";
 import {
   ElRadio,
   ElRadioGroup,
@@ -51,14 +51,12 @@ function setMap(m: Map) {
 }
 
 function elementLayerChange(event:any){
-  console.log('click',arguments)
   // e.defaultPrevented()
   event.stopPropagation();
 }
 
 function getLayers() {
   const l = [map.getBaseLayer(), ...map.getLayers()].filter(t => t).map((t, index) => {
-
     const t2 = {
       id: t.getId(),
       zIndex: t.getZIndex(),
@@ -85,6 +83,7 @@ function getLayers() {
     return t2
   })
   layers.value = l
+  console.log('layers',layers.value)
 }
 
 window.addEventListener('mousemove', onDrag)
@@ -141,6 +140,7 @@ function switchHide() {
   }
 }
 
+
 function onDrag(event: any) {
   if (!drag.value) {
     return
@@ -155,6 +155,14 @@ function onDrag(event: any) {
 defineExpose({
   setMap
 })
+
+function printLayer(layer: VectorLayer){
+  //
+  layer.getId && console.log('layer-id',layer.getId())
+  console.log('layer',layer)
+  layer.getGeometries && console.log('geometry', layer.getGeometries())
+}
+
 
 
 </script>
@@ -189,6 +197,7 @@ export default {
                           style="width: 100px"
                       />
                     </div>
+                    <div @click="printLayer(l.originLayer)"> print </div>
                     <el-radio-group
                         v-model="l.visible"
                         @change="l.visibleChange"
