@@ -153,7 +153,11 @@ function onDrag(event: any) {
 }
 
 defineExpose({
-  setMap
+  setMap,
+  close: () => {
+    map = undefined as any;
+    mapOk.value = false
+  }
 })
 
 function printLayer(layer: VectorLayer){
@@ -175,8 +179,7 @@ export default {
 <template>
   <el-config-provider namespace="map-debug">
     <div class="DebugMap" ref="refWrap">
-      <div style="height: 300px;width: 500px; border: 1px solid #3b9bf3;display: flex;flex-direction: column"
-           v-if="mapOk">
+      <div style="height: 300px;width: 500px; border: 1px solid #3b9bf3;display: flex;flex-direction: column" v-if="mapOk">
         <div class="header" style="background: #3b9bf3;height: 35px;padding-left:55px;display: flex;align-items: center" @mousedown="onMouseDown">
           <el-button size="small" @click="getLayers"> 重新获取图层</el-button>
           <el-button size="small" @click="switchHide"> 切换显示隐藏</el-button>

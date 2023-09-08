@@ -9,17 +9,20 @@ const app = createApp(App)
 let htmlDivElement = document.createElement('div');
 htmlDivElement.id = `a${new Date().getTime().toString()}`
 setTimeout(() => {
-  // document.body.appendChild(htmlDivElement)
   app.mount('#'+htmlDivElement.id)
 }, 0)
-
+let ______vNode:any;
 
 export const setMap = (map: maptalks.Map) => {
   let htmlDivElement = document.createElement('div');
   let vNode = createVNode(DebugMap,{});
   render(vNode, htmlDivElement)
   const _setMap = vNode.component?.exposed?.setMap
+  ______vNode =  vNode.component?.exposed
   if (_setMap) {
     _setMap(map)
   }
+}
+export const close =() =>{
+  ______vNode.close()
 }
