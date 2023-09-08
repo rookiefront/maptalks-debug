@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DebugMapBox from "../../components/DebugMapBox/index.vue";
-import {reactive, ref} from "vue";
+import {reactive, Ref, ref} from "vue";
 import Icon from "../../components/Icon/index.vue";
 import {
   ElRadio,
@@ -50,7 +50,7 @@ defineExpose({
 const mvvmData = reactive({
   openLayerId: '',
 })
-const layers = ref([])
+const layers:Ref<any[]> = ref([])
 // 图层上的逻辑
 /**
  * 获取所有的图层
