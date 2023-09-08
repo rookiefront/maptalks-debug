@@ -15,7 +15,9 @@ import {
   ElCollapseItem,
 } from "element-plus";
 import {VectorLayer} from "maptalks";
-let map;
+import  LayerUtil from "./layer";
+
+let layerUtilHandle:LayerUtil;
 const mapIsOk = ref(false)
 const mapBoxCss = ref({
   height: '500px',
@@ -24,8 +26,11 @@ const mapBoxCss = ref({
   backgroundColor: 'white',
 })
 function setMap(m:any){
-  map = m
   mapIsOk.value = true
+  layerUtilHandle = new LayerUtil(m)
+  setTimeout(() => {
+    getLayers()
+  },0)
 }
 function elementLayerChange(event:any){
   // e.defaultPrevented()
@@ -36,7 +41,7 @@ function elementLayerChange(event:any){
 defineExpose({
   setMap,
   close: () => {
-    map = undefined
+    layerUtilHandle && layerUtilHandle.dispose()
     mapIsOk.value = false
   }
 })
@@ -47,35 +52,11 @@ const mvvmData = reactive({
 })
 const layers = ref([])
 // 图层上的逻辑
-
+/**
+ * 获取所有的图层
+ */
 function getLayers() {
-  const l = [map.getBaseLayer(), ...map.getLayers()].filter(t => t).map((t, index) => {
-    const t2 = {
-      id: t.getId(),
-      zIndex: t.getZIndex(),
-      zIndexChange: (value:any) => {
-        t.setZIndex(value)
-      },
-      visible: t.isVisible(),
-      visibleChange: (value: any, s: boolean) => {
-      },
-      originLayer: t
-    }
-    t2.visibleChange = (visible, s) => {
-      layers.value[index].visible = visible
-      if (s) {
-        visible = !t.isVisible();
-        layers.value[index].visible = visible
-      }
-      if (visible) {
-        t.show()
-      } else {
-        t.hide()
-      }
-    }
-    return t2
-  })
-  layers.value = l
+  layers.value = layerUtilHandle.getLayers()
   console.log('layers',layers.value)
 }
 
@@ -88,25 +69,18 @@ function switchHide() {
     }
   }
   if (show) {
-
     layers.value.forEach((t:any) => {
       t.visible = false
       t.originLayer.hide()
     })
   } else {
-
     layers.value.forEach((t:any) => {
       t.visible = true
       t.originLayer.show()
     })
   }
 }
-function printLayer(layer: VectorLayer){
-  //
-  layer.getId && console.log('layer-id',layer.getId())
-  console.log('layer',layer)
-  layer.getGeometries && console.log('geometry', layer.getGeometries())
-}
+
 
 function onActiveGeometry(l:any){
   console.log(l)
@@ -122,7 +96,7 @@ export default {
 
 <template>
   <el-config-provider namespace="map-debug">
-    <DebugMapBox v-if="mapIsOk" :css="mapBoxCss" class="DebugMap">
+    <DebugMapBox v-if="mapIsOk && layerUtilHandle" :css="mapBoxCss" class="DebugMap">
       <template #title>
         <div class="header-icon">
           <Icon type="xuanze"></Icon>
@@ -145,10 +119,10 @@ export default {
                   />
                 </div>
                 <div class="row-icon">
-                  <Icon  type="dayin" @click="printLayer(l.originLayer)"></Icon>
+                  <Icon  type="dayin" @click="() => layerUtilHandle.printLayer(l.originLayer)"></Icon>
                 </div>
                 <div class="header-icon">
-                  <Icon type="xuanze" @click="onActiveGeometry(l)"></Icon>
+                  <Icon type="xuanze" @click="() => layerUtilHandle.onActiveGeometrySelect(l)"></Icon>
                 </div>
                 <el-radio-group
                     v-model="l.visible"
@@ -217,6 +191,7 @@ export default {
   .layer-input {
     display: flex;
     pointer-events: all;
+    color: black;
     .map-debug-radio-group{
       margin-left: 5px!important;
       .map-debug-radio{

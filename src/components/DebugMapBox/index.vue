@@ -93,8 +93,7 @@ export default {
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  .map-debug-collapse-item__header.focusing{
-    color: unset;
+  .map-debug-collapse-item__header{
   }
   .map-debug-collapse-item__header{
     pointer-events: none;
