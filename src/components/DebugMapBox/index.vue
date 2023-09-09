@@ -90,7 +90,7 @@ export default {
 <style  lang="scss">
 .DebugMapBox {
   position: fixed;
-  z-index: 9999;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   .map-debug-collapse-item__header{
@@ -104,7 +104,6 @@ export default {
   .DebugMapBox-header{
     user-select: none;
   }
-
 }
 
 </style>

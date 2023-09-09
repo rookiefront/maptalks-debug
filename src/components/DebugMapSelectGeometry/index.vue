@@ -5,12 +5,28 @@ import {type Map, VectorLayer} from "maptalks";
 import {
   ElConfigProvider,
 } from "element-plus";
+import DrawSymbol from "../../components/DrawSymbol/index.vue";
 interface Props {
   geometrys: any[]
 }
 
 const props = withDefaults(defineProps<Props>(), {});
-console.log(props)
+const symbols = ref(props.geometrys.map(t => {
+  let defaultSymbol = {}
+  console.log(t.getType())
+  switch (t.getType()) {
+    case 'Polygon':
+      defaultSymbol = {
+        lineColor: 'red'
+      }
+      break
+    case 'Point':
+      defaultSymbol = {
+        textFill: 'red'
+      }
+  }
+  return t.getSymbol() || defaultSymbol
+}))
 </script>
 <script lang="ts">
 export default {
@@ -20,7 +36,10 @@ export default {
 
 <template>
   <div class="DebugMapSelectGeometry">
-
+    <div v-for="(g,index) in props.geometrys">
+      <div> {{g.getLayer().getId()}} </div>
+      <DrawSymbol :geometry="g" :symbol="symbols[index]"></DrawSymbol>
+    </div>
   </div>
 </template>
 

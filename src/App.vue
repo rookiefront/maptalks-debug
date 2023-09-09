@@ -25,7 +25,13 @@ onMounted(() => {
   }
   new maptalks.VectorLayer('rect-layer-2', [new maptalks.Rectangle(map.getCenter(),800,800)]).addTo(map)
 
-  new maptalks.VectorLayer('rect-layer', [new maptalks.Rectangle(map.getCenter(),500,500)]).addTo(map)
+  new maptalks.VectorLayer('rect-layer', [new maptalks.Rectangle(map.getCenter(),500,500,{
+    symbol: {
+      lineColor: 'red',
+      polygonFill: 'yellow',
+      polygonOpacity: 0.6
+    }
+  })]).addTo(map)
 
 })
 </script>
