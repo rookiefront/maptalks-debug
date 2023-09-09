@@ -40,8 +40,11 @@
     map.getLayer('v')
         .addGeometry(
             new maptalks.Polygon(extent.toArray(), {
-                // Polygon attribute of symbol has polygonOpacity、lineWidth、lineOpacity、lineDx、lineDy
-                symbol : { 'polygonOpacity': 0, 'lineWidth': 5 }
+                symbol : {
+                    'polygonOpacity': 0.6,
+                    'polygonFill': 'pink',
+                    'lineWidth': 5,
+                }
             })
         );
     console.log(maptalksDebug.setMap(map))

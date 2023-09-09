@@ -33,6 +33,12 @@ onMounted(() => {
     }
   })]).addTo(map)
 
+  new maptalks.VectorLayer('point-layer', [new maptalks.Marker(map.getCenter(), {
+    symbol: {
+      textFill:'blue',
+      textName: 'a123'
+    }
+  })]).addTo(map)
 })
 </script>
 

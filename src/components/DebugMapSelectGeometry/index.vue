@@ -17,12 +17,13 @@ const symbols = ref(props.geometrys.map(t => {
   switch (t.getType()) {
     case 'Polygon':
       defaultSymbol = {
-        lineColor: 'red'
+        lineColor: undefined,
+        polygonFill: undefined,
       }
       break
     case 'Point':
       defaultSymbol = {
-        textFill: 'red'
+        textFill: undefined
       }
   }
   return t.getSymbol() || defaultSymbol

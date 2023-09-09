@@ -81,8 +81,9 @@ export default class {
             g.options.debugMapSymbol = symbol
           }
           g.setSymbol(Object.assign({}, symbol, {
-            lineColor: 'black',
+            lineColor: 'pink',
             polygonFill: 'red',
+            textFill: 'red',
           }))
         })
       }

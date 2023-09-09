@@ -29,9 +29,9 @@ const symbolList = computed(() => {
     return  props.symbol
   }
   return  [props.symbol]
-}) as any[]
+}) as any
 
-function keyIsOk(key,s){
+function keyIsOk(key:any,s:any){
   return Object.keys(s).includes(key)
 }
 watch(() => props.symbol, () => {
