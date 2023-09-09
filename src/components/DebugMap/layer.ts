@@ -7,20 +7,20 @@ export default class {
   map: maptalks.Map
   layers:Ref<any[]> = ref([])
   _identify = false
-  _identifySelect = false
+  _identifySelect = ref(false)
   _identifyLayers:any[] = []
-  _identifySelectGeometry: maptalks.Geometry[] = []
+  _identifySelectGeometry: Ref<maptalks.Geometry[]> = ref([])
   coordinate: any
   constructor(map: maptalks.Map) {
     this.map = map
     this.map.on('click', () => {
-      if (this._identifySelect){
+      if (this._identifySelect.value){
         this.identifyLayerEnd()
       }
     })
     this.map.on('mousemove', (e) => {
       this.coordinate = e.coordinate
-      if (this._identifySelect){
+      if (this._identifySelect.value){
         this.identifyLayers(this._identifyLayers, e.coordinate)
       }
     })
@@ -30,7 +30,7 @@ export default class {
     this.map = null as any
   }
   identifyLayerEnd() {
-    this._identifySelect = false
+    this._identifySelect.value = false
     ;(this.map.getLayers() || []).forEach((layer: any) => {
       (layer.getGeometries() || []).forEach((g: maptalks.Geometry) => {
         if (g.options.debugMapSymbol){
@@ -52,14 +52,15 @@ export default class {
       layers = [layer.originLayer]
     }
     this._identifyLayers = layers
-    this._identifySelect = true
+    this._identifySelect.value = true
   }
   private identifyLayers(layers: maptalks.Layer[],coordinate:any){
     if (this._identify){
       return
     }
     this._identify = true
-    this._identifySelectGeometry = []
+    this._identifySelectGeometry.value = []
+    const glist:any[] = []
     layers.forEach((layer:any) => {
       if (layer.identify){
         (layer.getGeometries() || []).forEach((g:maptalks.Geometry) => {
@@ -74,6 +75,7 @@ export default class {
         })
         let geometrys = layer.identify(coordinate) || [];
         geometrys.forEach((g:maptalks.Geometry) => {
+          glist.push(g)
           let symbol = g.getSymbol() || {null: true};
           if (!g.options.debugMapSymbol){
             g.options.debugMapSymbol = symbol
@@ -85,6 +87,7 @@ export default class {
         })
       }
     })
+    this._identifySelectGeometry.value = glist
     this._identify = false
   }
 
@@ -96,7 +99,9 @@ export default class {
 
 
   getLayers() {
+    this.identifyLayerEnd()
     this.layers.value = []
+    this._identifySelectGeometry.value = []
     const l = this.layers.value = [this.map.getBaseLayer(), ...this.map.getLayers()].filter(t => t).map((t, index) => {
       const t2 = {
         id: t.getId(),

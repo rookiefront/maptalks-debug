@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import DebugMapBox from "../../components/DebugMapBox/index.vue";
+import DebugMapSelectGeometry from "../../components/DebugMapSelectGeometry/index.vue";
 import {reactive, Ref, ref, watch} from "vue";
 import Icon from "../../components/Icon/index.vue";
 import {
@@ -14,9 +15,7 @@ import {
   ElCollapse,
   ElCollapseItem,
 } from "element-plus";
-import {VectorLayer} from "maptalks";
 import  LayerUtil from "./layer";
-import layer from "./layer";
 
 let layerUtilHandle:LayerUtil;
 const mapIsOk = ref(false)
@@ -102,68 +101,75 @@ export default {
         <el-button size="small" @click="switchHide"> 切换显示隐藏</el-button>
       </template>
       <template #default>
-        <el-collapse accordion v-model="mvvmData.openLayerId" v-if="layerUtilHandle.layers.value.length > 0">
-          <el-collapse-item :name="l.id" v-for="(l,index) in layerUtilHandle.layers.value || []">
-            <template #title>
-              <div class="layer-input" @click="elementLayerChange">
-                <div class="row-title"> {{ l.id }}</div>
-                <div>
-                  <el-input-number
-                      v-model="l.zIndex"
-                      controls-position="right"
-                      @change="l.zIndexChange"
-                      style="width: 100px"
-                  />
-                </div>
-                <div class="row-icon">
-                  <Icon  type="dayin" @click="() => layerUtilHandle.printLayer(l.originLayer)"></Icon>
-                </div>
-                <div class="header-icon">
-                  <Icon type="xuanze" @click="() =>  layerUtilHandle.identifyLayer(l)"></Icon>
-                </div>
-                <el-radio-group
-                    v-model="l.visible"
-                    @change="l.visibleChange"
-                    style="margin:0 35px"
-                >
-                  <el-radio :label="true"> 是</el-radio>
-                  <el-radio :label="false"> 否</el-radio>
-                </el-radio-group>
-              </div>
-            </template>
-            <div>
-              <el-form label-width="60px">
-                <el-form-item label="ID">
-                  <el-input v-model="l.id" disabled></el-input>
-                </el-form-item>
-
-                <el-form-item label="层级">
-                  <el-input-number
-                      v-model="l.zIndex"
-                      controls-position="right"
-                      @change="l.zIndexChange"
-                  />
-                </el-form-item>
-
-                <el-form-item label="可见">
-                  <div style="display: flex;">
-                    <el-radio-group
-                        v-model="l.visible"
-                        @change="l.visibleChange"
-                        style="margin-right: 35px"
-                    >
-                      <el-radio :label="true"> 是</el-radio>
-                      <el-radio :label="false"> 否</el-radio>
-                    </el-radio-group>
-                    <el-button @click.stop="l.visibleChange(null, true)">
-                      切换
-                    </el-button>
+        <DebugMapSelectGeometry
+            v-if="!layerUtilHandle._identifySelect.value && layerUtilHandle._identifySelectGeometry.value.length > 0"
+            :geometrys="layerUtilHandle._identifySelectGeometry.value"
+        ></DebugMapSelectGeometry>
+        <template v-else>
+          <el-collapse accordion v-model="mvvmData.openLayerId" v-if="layerUtilHandle.layers.value.length > 0">
+            <el-collapse-item :name="l.id" v-for="(l,index) in layerUtilHandle.layers.value || []">
+              <template #title>
+                <div class="layer-input" @click="elementLayerChange">
+                  <div class="row-title"> {{ l.id }}</div>
+                  <div>
+                    <el-input-number
+                        v-model="l.zIndex"
+                        controls-position="right"
+                        @change="l.zIndexChange"
+                        style="width: 100px"
+                    />
                   </div>
-                </el-form-item>
-              </el-form>
-            </div>
-          </el-collapse-item>
-        </el-collapse>
+                  <div class="row-icon">
+                    <Icon  type="dayin" @click="() => layerUtilHandle.printLayer(l.originLayer)"></Icon>
+                  </div>
+                  <div class="header-icon">
+                    <Icon type="xuanze" @click="() =>  layerUtilHandle.identifyLayer(l)"></Icon>
+                  </div>
+                  <el-radio-group
+                      v-model="l.visible"
+                      @change="l.visibleChange"
+                      style="margin:0 35px"
+                  >
+                    <el-radio :label="true"> 是</el-radio>
+                    <el-radio :label="false"> 否</el-radio>
+                  </el-radio-group>
+                </div>
+              </template>
+
+              <div>
+                <el-form label-width="60px">
+                  <el-form-item label="ID">
+                    <el-input v-model="l.id" disabled></el-input>
+                  </el-form-item>
+
+                  <el-form-item label="层级">
+                    <el-input-number
+                        v-model="l.zIndex"
+                        controls-position="right"
+                        @change="l.zIndexChange"
+                    />
+                  </el-form-item>
+
+                  <el-form-item label="可见">
+                    <div style="display: flex;">
+                      <el-radio-group
+                          v-model="l.visible"
+                          @change="l.visibleChange"
+                          style="margin-right: 35px"
+                      >
+                        <el-radio :label="true"> 是</el-radio>
+                        <el-radio :label="false"> 否</el-radio>
+                      </el-radio-group>
+                      <el-button @click.stop="l.visibleChange(null, true)">
+                        切换
+                      </el-button>
+                    </div>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </el-collapse-item>
+          </el-collapse>
+        </template>
       </template>
     </DebugMapBox>
   </el-config-provider>
