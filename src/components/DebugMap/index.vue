@@ -65,19 +65,20 @@ watch(() => layers.value, () => {
 
 function switchHide() {
   let show = false
-  for (let valueElement of layers.value) {
+  const layers = layerUtilHandle.layers.value
+  for (let valueElement of layers) {
     if (valueElement.originLayer.isVisible()) {
       show = true
       break
     }
   }
   if (show) {
-    layers.value.forEach((t:any) => {
+    layers.forEach((t:any) => {
       t.visible = false
       t.originLayer.hide()
     })
   } else {
-    layers.value.forEach((t:any) => {
+    layers.forEach((t:any) => {
       t.visible = true
       t.originLayer.show()
     })
@@ -96,6 +97,7 @@ export default {
       <template #title>
         <div class="header-icon" @click="() => layerUtilHandle.identifyLayer(undefined)">
           <Icon type="xuanze"></Icon>
+          <div> {{layerUtilHandle._identifySelectGeometry.value.length}} </div>
         </div>
         <el-button size="small" @click="getLayers"> 重新获取图层</el-button>
         <el-button size="small" @click="switchHide"> 切换显示隐藏</el-button>
@@ -183,6 +185,7 @@ export default {
     align-items: center;
     padding: 5px;
     box-sizing: border-box;
+    cursor: pointer;
   }
   .row-icon{
     display: flex;
