@@ -1,24 +1,91 @@
 import * as maptalks from 'maptalks'
 import {VectorLayer} from "maptalks";
+import {Ref, ref} from "vue";
+
 
 export default class {
   map: maptalks.Map
-
+  layers:Ref<any[]> = ref([])
+  _identify = false
+  _identifySelect = false
+  _identifyLayers:any[] = []
+  _identifySelectGeometry: maptalks.Geometry[] = []
+  coordinate: any
   constructor(map: maptalks.Map) {
     this.map = map
+    this.map.on('click', () => {
+      if (this._identifySelect){
+        this.identifyLayerEnd()
+      }
+    })
     this.map.on('mousemove', (e) => {
-      let layers = this.getLayers();
-      layers.forEach((t:any) => {
-        const layer = t.originLayer
-        if (layer.identify){
-          let identify = layer.identify(e.coordinate);
-        }
-      })
+      this.coordinate = e.coordinate
+      if (this._identifySelect){
+        this.identifyLayers(this._identifyLayers, e.coordinate)
+      }
     })
   }
 
   dispose() {
     this.map = null as any
+  }
+  identifyLayerEnd() {
+    this._identifySelect = false
+    ;(this.map.getLayers() || []).forEach((layer: any) => {
+      (layer.getGeometries() || []).forEach((g: maptalks.Geometry) => {
+        if (g.options.debugMapSymbol){
+          let symbol =  g.options.debugMapSymbol
+          if (symbol.null){
+            g.setSymbol(null as any)
+          }else{
+            g.setSymbol(g.options.debugMapSymbol)
+          }
+        }
+      })
+    })
+  }
+
+  identifyLayer(layer?: any){
+    this.identifyLayerEnd()
+    let layers = this.map.getLayers()
+    if (layer){
+      layers = [layer.originLayer]
+    }
+    this._identifyLayers = layers
+    this._identifySelect = true
+  }
+  private identifyLayers(layers: maptalks.Layer[],coordinate:any){
+    if (this._identify){
+      return
+    }
+    this._identify = true
+    this._identifySelectGeometry = []
+    layers.forEach((layer:any) => {
+      if (layer.identify){
+        (layer.getGeometries() || []).forEach((g:maptalks.Geometry) => {
+          if (g.options.debugMapSymbol){
+            let symbol =  g.options.debugMapSymbol
+            if (symbol.null){
+              g.setSymbol(null as any)
+            }else{
+              g.setSymbol(g.options.debugMapSymbol)
+            }
+          }
+        })
+        let geometrys = layer.identify(coordinate) || [];
+        geometrys.forEach((g:maptalks.Geometry) => {
+          let symbol = g.getSymbol() || {null: true};
+          if (!g.options.debugMapSymbol){
+            g.options.debugMapSymbol = symbol
+          }
+          g.setSymbol(Object.assign({}, symbol, {
+            lineColor: 'black',
+            polygonFill: 'red',
+          }))
+        })
+      }
+    })
+    this._identify = false
   }
 
   printLayer(layer: VectorLayer) {
@@ -27,14 +94,10 @@ export default class {
     layer.getGeometries && console.log('geometry', layer.getGeometries())
   }
 
-  onActiveGeometrySelect(layer: VectorLayer) {
-    layer.getId && console.log('layer-id', layer.getId())
-    console.log('layer', layer)
-    layer.getGeometries && console.log('geometry', layer.getGeometries())
-  }
 
   getLayers() {
-    const l = [this.map.getBaseLayer(), ...this.map.getLayers()].filter(t => t).map((t, index) => {
+    this.layers.value = []
+    const l = this.layers.value = [this.map.getBaseLayer(), ...this.map.getLayers()].filter(t => t).map((t, index) => {
       const t2 = {
         id: t.getId(),
         zIndex: t.getZIndex(),
@@ -47,10 +110,10 @@ export default class {
         originLayer: t
       }
       t2.visibleChange = (visible, s) => {
-        l[index].visible = visible
+        this.layers.value[index].visible = visible
         if (s) {
           visible = !t.isVisible();
-          l[index].visible = visible
+          this.layers.value[index].visible = visible
         }
         if (visible) {
           t.show()
@@ -60,6 +123,6 @@ export default class {
       }
       return t2
     })
-    return l
+    return this.layers
   }
 }

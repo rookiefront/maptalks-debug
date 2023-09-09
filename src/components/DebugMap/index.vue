@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DebugMapBox from "../../components/DebugMapBox/index.vue";
-import {reactive, Ref, ref} from "vue";
+import {reactive, Ref, ref, watch} from "vue";
 import Icon from "../../components/Icon/index.vue";
 import {
   ElRadio,
@@ -16,6 +16,7 @@ import {
 } from "element-plus";
 import {VectorLayer} from "maptalks";
 import  LayerUtil from "./layer";
+import layer from "./layer";
 
 let layerUtilHandle:LayerUtil;
 const mapIsOk = ref(false)
@@ -56,9 +57,12 @@ const layers:Ref<any[]> = ref([])
  * 获取所有的图层
  */
 function getLayers() {
-  layers.value = layerUtilHandle.getLayers()
-  console.log('layers',layers.value)
+  layerUtilHandle.getLayers()
+  console.log('layers',layerUtilHandle.layers.value)
 }
+watch(() => layers.value, () => {
+  console.log('layers',layers.value)
+},{deep: true, immediate: true})
 
 function switchHide() {
   let show = false
@@ -80,13 +84,6 @@ function switchHide() {
     })
   }
 }
-
-
-function onActiveGeometry(l:any){
-  console.log(l)
-}
-
-
 </script>
 <script lang="ts">
 export default {
@@ -98,15 +95,15 @@ export default {
   <el-config-provider namespace="map-debug">
     <DebugMapBox v-if="mapIsOk && layerUtilHandle" :css="mapBoxCss" class="DebugMap">
       <template #title>
-        <div class="header-icon">
+        <div class="header-icon" @click="() => layerUtilHandle.identifyLayer(undefined)">
           <Icon type="xuanze"></Icon>
         </div>
         <el-button size="small" @click="getLayers"> 重新获取图层</el-button>
         <el-button size="small" @click="switchHide"> 切换显示隐藏</el-button>
       </template>
       <template #default>
-        <el-collapse accordion v-model="mvvmData.openLayerId">
-          <el-collapse-item :name="l.id" v-for="(l,index) in layers">
+        <el-collapse accordion v-model="mvvmData.openLayerId" v-if="layerUtilHandle.layers.value.length > 0">
+          <el-collapse-item :name="l.id" v-for="(l,index) in layerUtilHandle.layers.value || []">
             <template #title>
               <div class="layer-input" @click="elementLayerChange">
                 <div class="row-title"> {{ l.id }}</div>
@@ -122,7 +119,7 @@ export default {
                   <Icon  type="dayin" @click="() => layerUtilHandle.printLayer(l.originLayer)"></Icon>
                 </div>
                 <div class="header-icon">
-                  <Icon type="xuanze" @click="() => layerUtilHandle.onActiveGeometrySelect(l)"></Icon>
+                  <Icon type="xuanze" @click="() =>  layerUtilHandle.identifyLayer(l)"></Icon>
                 </div>
                 <el-radio-group
                     v-model="l.visible"
