@@ -29,10 +29,19 @@ export default class {
   dispose() {
     this.map = null as any
   }
+  printMap(){
+    console.log('map', this.map)
+    console.log('pitch', this.map.getPitch())
+    console.log('zoom', this.map.getZoom())
+    console.log('center', this.map.getCenter())
+    console.log('register window _map', )
+    // @ts-ignore
+    window['_map'] = this.map
+  }
   identifyLayerEnd() {
     this._identifySelect.value = false
     ;(this.map.getLayers() || []).forEach((layer: any) => {
-      (layer.getGeometries() || []).forEach((g: maptalks.Geometry) => {
+      layer.getGeometries && (layer.getGeometries() || []).forEach((g: maptalks.Geometry) => {
         if (g.options.debugMapSymbol){
           let symbol =  g.options.debugMapSymbol
           if (symbol.null){

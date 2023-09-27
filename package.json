@@ -1,7 +1,7 @@
 {
   "name": "maptalks-debug",
   "private": false,
-  "version": "0.0.11",
+  "version": "0.0.15",
   "type": "module",
   "main": "dist/maptalksDebug.js",
   "scripts": {
@@ -15,7 +15,10 @@
     "dist/",
     "package.json"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "maptalks.three": "^0.37.3",
+    "three": "^0.156.1"
+  },
   "devDependencies": {
     "@types/maptalks": "^0.49.3",
     "@vitejs/plugin-vue": "^4.1.0",

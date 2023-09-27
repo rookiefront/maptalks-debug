@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DebugMapBox from "../../components/DebugMapBox/index.vue";
 import DebugMapSelectGeometry from "../../components/DebugMapSelectGeometry/index.vue";
-import {reactive, Ref, ref, watch} from "vue";
+import {reactive, Ref, ref, watch, onUnmounted} from "vue";
 import Icon from "../../components/Icon/index.vue";
 import {
   ElRadio,
@@ -38,12 +38,14 @@ function elementLayerChange(event:any){
 }
 
 
+function close(){
+  layerUtilHandle && layerUtilHandle.dispose()
+  mapIsOk.value = false
+}
+
 defineExpose({
   setMap,
-  close: () => {
-    layerUtilHandle && layerUtilHandle.dispose()
-    mapIsOk.value = false
-  }
+  close
 })
 
 
@@ -84,6 +86,9 @@ function switchHide() {
     })
   }
 }
+onUnmounted(() => {
+  close()
+})
 </script>
 <script lang="ts">
 export default {
@@ -101,6 +106,7 @@ export default {
         </div>
         <el-button size="small" @click="getLayers"> 重新获取图层</el-button>
         <el-button size="small" @click="switchHide"> 切换显示隐藏</el-button>
+        <el-button size="small" @click="() => layerUtilHandle.printMap()"> 打印当前地图信息</el-button>
       </template>
       <template #default>
         <DebugMapSelectGeometry
