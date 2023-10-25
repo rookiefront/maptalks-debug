@@ -1,7 +1,7 @@
 {
-  "name": "maptalks-debug",
+  "name": "maptalks.debug",
   "private": false,
-  "version": "0.0.15",
+  "version": "0.0.2",
   "type": "module",
   "main": "dist/maptalksDebug.js",
   "scripts": {
@@ -22,8 +22,7 @@
   "bugs": {
     "url": "https://github.com/rookiefront/maptalks-debug/issues"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/maptalks": "^0.49.3",
     "@vitejs/plugin-vue": "^4.1.0",
