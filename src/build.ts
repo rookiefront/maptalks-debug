@@ -13,7 +13,7 @@ setTimeout(() => {
 }, 0)
 let ______vNode:any;
 
-export const setMap = (map: maptalks.Map) => {
+export const setMap = (map: maptalks.Map,boxZIndex?:number) => {
   let htmlDivElement = document.createElement('div');
   let vNode = createVNode(DebugMap,{});
   render(vNode, htmlDivElement)
@@ -22,7 +22,13 @@ export const setMap = (map: maptalks.Map) => {
   if (_setMap) {
     _setMap(map)
   }
+  const _setZIndex = vNode.component?.exposed?.setZIndex
+  if (boxZIndex){
+    _setZIndex(boxZIndex)
+  }
 }
+
+
 export const close =() =>{
   ______vNode.close()
 }

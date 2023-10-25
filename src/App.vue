@@ -22,6 +22,7 @@ onMounted(() => {
   const setMap = vNode.component?.exposed?.setMap
   if (setMap) {
     setMap(map)
+    vNode.component?.exposed?.setZIndex(9999)
   }
   new maptalks.VectorLayer('rect-layer-2', [new maptalks.Rectangle(map.getCenter(),800,800)]).addTo(map)
 

@@ -18,6 +18,7 @@ import {
 import  LayerUtil from "./layer";
 
 let layerUtilHandle:LayerUtil;
+const boxZIndex = ref<number | undefined>(undefined)
 const mapIsOk = ref(false)
 const mapBoxCss = ref({
   height: '500px',
@@ -42,10 +43,14 @@ function close(){
   layerUtilHandle && layerUtilHandle.dispose()
   mapIsOk.value = false
 }
+function setZIndex(index: number){
+  boxZIndex.value = index
+}
 
 defineExpose({
   setMap,
-  close
+  close,
+  setZIndex
 })
 
 
@@ -98,7 +103,7 @@ export default {
 
 <template>
   <el-config-provider namespace="map-debug">
-    <DebugMapBox v-if="mapIsOk && layerUtilHandle" :css="mapBoxCss" class="DebugMap">
+    <DebugMapBox v-if="mapIsOk && layerUtilHandle" :css="{...mapBoxCss,...{zIndex: boxZIndex}}" class="DebugMap">
       <template #title>
         <div class="header-icon" @click="() => layerUtilHandle.identifyLayer(undefined)">
           <Icon type="xuanze"></Icon>
